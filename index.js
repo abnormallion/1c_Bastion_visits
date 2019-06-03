@@ -53,19 +53,22 @@ var objectResult = {
 // oneCOperations.getWorkMode(workMode);
 // oneCOperations.getPlanVisit(result);
 
-cron.schedule("* * * * *", () => {
+cron.schedule(config.cronScheduler, () => {
   filesOperations.checkFiles();
 });
 
 app.get("/allvisits", (req, res) => {
-  oneCOperations.getDataFromOneC(workMode, objectResult, () => {
-    //if (err) res.status(400).send(err);
-
-    dbOperations.getVisitsFromDB(workMode, objectResult, () => {
-      // if (err) res.status(400).send(err);
-      // else
-      res.status(200).send(objectResult);
-    });
+  oneCOperations.getDataFromOneC(workMode, objectResult, obj => {
+    if (obj != undefined && obj.err != undefined && obj.err) {
+      res.status(400).send({ err: obj.err });
+    } else {
+      dbOperations.getVisitsFromDB(workMode, objectResult, obj => {
+        if (obj != undefined && obj.err != undefined && obj.err) {
+          //console.log("123", obj.err);
+          res.status(400).send({ err: obj.err });
+        } else res.status(200).send(objectResult);
+      });
+    }
   });
 });
 

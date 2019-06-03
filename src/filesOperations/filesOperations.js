@@ -5,6 +5,7 @@ const dbOperations = require("../dbOperations/dbOperations");
 const config = require("../config/config");
 
 var dateNow = moment(new Date()).format("YYYY_MM_DD");
+//var dateNow = "2019_05_29";
 var path = config.pathFolderWithFilesBastion + dateNow;
 
 console.log(path);

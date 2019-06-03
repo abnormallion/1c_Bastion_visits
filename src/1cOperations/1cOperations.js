@@ -7,7 +7,7 @@ var getWorkMode = function(workMode, result, callback) {
   fs.readFile(new URL(pathFileWithWorkMode), "utf8", (err, data) => {
     if (err) {
       console.log(err);
-      callback();
+      callback({ err });
     } else {
       var arrayString = data.split("\r");
       arrayString.forEach(elementString => {
@@ -23,12 +23,6 @@ var getWorkMode = function(workMode, result, callback) {
             } catch {
               console.log(err);
             }
-            console.log("arrau0", arrayElements[1]);
-            // try {
-            // result[arrayElements[0]].periodWith = arrayElements[1];
-            // } catch {
-            //   console.log(err);
-            // }
           }
           if (arrayElements.length >= 2) {
             try {
@@ -37,12 +31,6 @@ var getWorkMode = function(workMode, result, callback) {
             } catch {
               console.log(err);
             }
-            // try {
-            //   result[arrayElements[0]].periodBy = arrayElements[2];
-            // } catch {
-            //   console.log(err);
-            //   callback();
-            // }
           }
         }
       });
@@ -56,6 +44,10 @@ var getPlanVisit = function(result, callback) {
   //   if (result.breakfast != undefined) result.breakfast.planVisit = 10;
   //   if (result.dinner != undefined) result.dinner.planVisit = 10;
   //   if (result.supper != undefined) result.supper.planVisit = 10;
+
+  result.breakfast.planVisit = 0;
+  result.dinner.planVisit = 0;
+  result.supper.planVisit = 0;
 
   fs.readFile(new URL(pathFileWithPlanInformation), "utf8", (err, data) => {
     if (err) {
@@ -84,9 +76,12 @@ var getPlanVisit = function(result, callback) {
 };
 
 var getDataFromOneC = function(workMode, result, callback) {
-  getWorkMode(workMode, result, () => {
-    //if (err) callback(err);
-    //callback();
+  getWorkMode(workMode, result, obj => {
+    if (obj != undefined && obj.err) {
+      callback(obj);
+      return;
+    }
+
     getPlanVisit(result, () => {
       callback();
     });

@@ -16,8 +16,8 @@ function getVisitsBreakfast(workMode, result, callback) {
     getRecords(timeStart, timeFinish, objectResult => {
       console.log("breakfast");
       if (objectResult.err) {
-        console.log(objectResult.err);
-        callback();
+        // console.log(objectResult.err);
+        callback({ err: objectResult.err });
       } else {
         console.log(objectResult.recordsNumber);
         result.breakfast.factVisit = objectResult.recordsNumber;
@@ -37,7 +37,7 @@ function getVisitsDinner(workMode, result, callback) {
       console.log("dinner");
       if (objectResult.err) {
         console.log(objectResult.err);
-        callback();
+        callback({ err: objectResult.err });
       } else {
         console.log(objectResult.recordsNumber);
         result.dinner.factVisit = objectResult.recordsNumber;
@@ -57,7 +57,7 @@ function getVisitsSupper(workMode, result, callback) {
       console.log("supper");
       if (objectResult.err) {
         console.log(objectResult.err);
-        callback();
+        callback({ err: objectResult.err });
       } else {
         console.log(objectResult.recordsNumber);
         result.supper.factVisit = objectResult.recordsNumber;
@@ -70,11 +70,21 @@ function getVisitsSupper(workMode, result, callback) {
 }
 
 var getVisitsFromDB = function(workMode, result, callback) {
-  getVisitsBreakfast(workMode, result, () => {
-    getVisitsDinner(workMode, result, () => {
-      getVisitsSupper(workMode, result, () => {
+  getVisitsBreakfast(workMode, result, obj => {
+    //console.log("obj", obj);
+    if (obj != undefined && obj.err) {
+      callback(obj);
+      return;
+    }
+    //console.log("late");
+    getVisitsDinner(workMode, result, obj => {
+      if (obj != undefined && obj.err) {
+        callback(obj);
+        return;
+      }
+      getVisitsSupper(workMode, result, obj => {
         console.log("callback");
-        callback();
+        callback(obj);
       });
     });
   });
@@ -172,10 +182,6 @@ var addRecord = function(fileRecords, pathFile) {
 };
 
 var getRecords = function(periodHoursWith, periodHoursBy, callback) {
-  // sql
-  //   .connect(config)
-  //   .then(() => {
-
   var conn = new mssql.ConnectionPool(dbconfig);
   conn
     .connect()
@@ -185,6 +191,7 @@ var getRecords = function(periodHoursWith, periodHoursBy, callback) {
       // create Request object
       var request = new mssql.Request(conn);
       var dateNowFormatted = moment(new Date()).format("DD.MM.YYYY");
+      //var dateNowFormatted = "30.05.2019";
 
       //var periodHoursWith = "15:00:00";
       var periodWith = dateNowFormatted + " " + periodHoursWith;
@@ -207,18 +214,15 @@ var getRecords = function(periodHoursWith, periodHoursBy, callback) {
           console.log(recordset.recordset.length);
           console.log(recordset);
           callback({ recordsNumber: recordset.recordset.length });
-          //sql.close();
         })
         .catch(err => {
           console.log(err);
           callback({ err });
-          //sql.close();
         });
     })
     .catch(err => {
       console.log(err);
       callback({ err });
-      // sql.close();
     });
 };
 

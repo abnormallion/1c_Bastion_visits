@@ -9,5 +9,6 @@ module.exports = {
     password: "",
     server: "",
     database: ""
-  }
+  },
+  cronScheduler: "* * * * *"
 };
