@@ -9,9 +9,9 @@ var getWorkMode = function(workMode, result, callback) {
       console.log(err);
       callback({ err });
     } else {
-      var arrayString = data.split("\r");
+      var arrayString = data.split("\n");
       arrayString.forEach(elementString => {
-        elementString = elementString.replace(/\r?\n/g, "");
+        //elementString = elementString.replace(/\r?\n/g, "");
         var arrayElements = elementString.split(";");
         //console.log(arrayElements)
         if (arrayElements.length > 0) {
@@ -20,15 +20,16 @@ var getWorkMode = function(workMode, result, callback) {
             try {
               workMode[arrayElements[0]].periodWith = arrayElements[1];
               result[arrayElements[0]].periodWith = arrayElements[1];
-            } catch {
+            } catch (err) {
               console.log(err);
             }
           }
+
           if (arrayElements.length >= 2) {
             try {
               workMode[arrayElements[0]].periodBy = arrayElements[2];
               result[arrayElements[0]].periodBy = arrayElements[2];
-            } catch {
+            } catch (err) {
               console.log(err);
             }
           }
@@ -54,22 +55,22 @@ var getPlanVisit = function(result, callback) {
       console.log(err);
       callback();
     } else {
-      var arrayString = data.split("\r");
+      var arrayString = data.split("\n");
       arrayString.forEach(elementString => {
-        elementString = elementString.replace(/\r?\n/g, "");
+        //elementString = elementString.replace(/\r?\n/g, "");
         var arrayElements = elementString.split(";");
         if (arrayElements.length > 0) {
           if (arrayElements.length >= 1) {
             try {
               result[arrayElements[0]].planVisit = parseInt(arrayElements[1]);
-            } catch {
+            } catch (err) {
               console.log(err);
               //callback();
             }
           }
         }
       });
-      console.log(result);
+      // console.log(result);
       callback();
     }
   });
@@ -78,12 +79,12 @@ var getPlanVisit = function(result, callback) {
 var getDataFromOneC = function(workMode, result, callback) {
   getWorkMode(workMode, result, obj => {
     if (obj != undefined && obj.err) {
-      callback(obj);
+      callback(obj, obj.err);
       return;
     }
 
     getPlanVisit(result, () => {
-      callback();
+      callback(obj, null);
     });
   });
 };

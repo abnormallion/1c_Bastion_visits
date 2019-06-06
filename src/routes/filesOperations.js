@@ -1,7 +1,7 @@
 const fs = require("fs");
 const moment = require("moment");
 
-const dbOperations = require("../dbOperations/dbOperations");
+const dbOperations = require("./dbOperations");
 const config = require("../config/config");
 
 var dateNow = moment(new Date()).format("YYYY_MM_DD");
@@ -64,10 +64,10 @@ var checkFiles = function() {
         //console.log(file);
 
         var fileRecords = [];
-        var arrayString = file.split("\r");
+        var arrayString = file.split("\n");
         //console.log(arrayString);
         arrayString.forEach(elementString => {
-          elementString = elementString.replace(/\r?\n/g, "");
+          //elementString = elementString.replace(/\r?\n/g, "");
           var arrayElements = elementString.split(";");
 
           //console.log(elementString);

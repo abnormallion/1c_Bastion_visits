@@ -73,18 +73,19 @@ var getVisitsFromDB = function(workMode, result, callback) {
   getVisitsBreakfast(workMode, result, obj => {
     //console.log("obj", obj);
     if (obj != undefined && obj.err) {
-      callback(obj);
+      callback(obj, obj.err);
       return;
     }
-    //console.log("late");
+
+    // console.log("late");
     getVisitsDinner(workMode, result, obj => {
       if (obj != undefined && obj.err) {
-        callback(obj);
+        callback(obj, obj.err);
         return;
       }
       getVisitsSupper(workMode, result, obj => {
         console.log("callback");
-        callback(obj);
+        callback(obj, null);
       });
     });
   });
