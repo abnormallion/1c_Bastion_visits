@@ -1,5 +1,11 @@
+build/
+
 # dependencies
 node_modules/
 
 # dev config
 dev.js
+
+# other
+.DS_Store
+
