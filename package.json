@@ -8,7 +8,8 @@
   },
   "scripts": {
     "dev": "nodemon --watch src/ --exec babel-node -- ./src/index",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "babel src --out-dir ./build",
+    "start": "node ./build/index"
   },
   "author": "",
   "license": "ISC",
@@ -33,6 +34,7 @@
     "moment": "^2.24.0",
     "mssql": "^5.1.0",
     "node-cron": "^2.0.3",
+    "path": "^0.12.7",
     "socket.io": "^2.2.0"
   }
 }
